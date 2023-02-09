@@ -16,6 +16,7 @@ from Model.OrganizationRecord import OrganizationRecordModel
 class OrganizationRecordView:
     # constructor instantiates an instance of our business layer and model layer
     def __init__(self):
+        self.textbox = None
         self.new_window = None
         self.window = tk.Tk()
         self.service = OrganizationService()
@@ -26,7 +27,7 @@ class OrganizationRecordView:
     # select_option method once button is clicked
     def appGUI(self):
         self.window.title("Company Records")
-        self.window.geometry("1000x700")
+        self.window.geometry("300x200")
 
         header = tk.Label(self.window, text="Company Record Database")
         header.pack()
@@ -70,32 +71,47 @@ class OrganizationRecordView:
 
             # Insert the result into the textbox
             textbox.insert(tk.END, "Invalid menu option, try again.")
+        self.textbox.delete("1.0", tk.END)
+        combo.set("")
 
     # method to display all records from our dataset, reloads the database on every call
     def reloadDataSet(self):
-        textbox = tk.Text(self.window, height=105, width=250)
-        textbox.pack(pady=10)
+        reload_window = tk.Toplevel(self.window)
+        reload_window.title("Original Records")
+        reload_window.geometry("1000x700")
+
+        header = tk.Label(reload_window, text="Original list of Organizations")
+        header.pack()
+
+        self.textbox = tk.Text(reload_window, height=105, width=250)
+        self.textbox.pack(pady=10)
         # Clear the textbox
-        textbox.delete("1.0", tk.END)
+        self.textbox.delete("1.0", tk.END)
 
         # Insert the result into the textbox
         organization = self.service.getAllDataSetRecords()
         for line in organization:
-            textbox.insert(tk.END, str(line) + "\n")
+            self.textbox.insert(tk.END, str(line) + "\n")
+
+        # Wait for user action
+        reload_window.wait_window()
+
+        # Close the insert window
+        reload_window.destroy()
 
     # method which takes in an int input and display record at user input
     def viewRecord(self):
         self.new_window = tk.Toplevel(self.window)
-        self.new_window.title("View Record")
+        self.new_window.title("View Organization")
         self.new_window.geometry("250x250")
 
-        self.label = tk.Label(self.new_window, text="Select line number to view a record: ")
-        self.label.pack()
+        label = tk.Label(self.new_window, text="Select line number to view an organization: ")
+        label.pack()
 
-        self.result_entry = tk.Entry(self.new_window)
-        self.result_entry.pack()
+        result_entry = tk.Entry(self.new_window)
+        result_entry.pack()
 
-        view = input(self.result_entry)
+        view = input(result_entry)
         # access last element of string and assign it to variable last_num
         last_num = view[-1]
         if last_num == 1 and view != 11:
@@ -112,16 +128,45 @@ class OrganizationRecordView:
                                   command=lambda: self.service.getRecord(view))
         submit_button.pack()
 
-
     # method to display all records from database
     def viewAllRecords(self):
-        print("List of organization")
+        viewAll_window = tk.Toplevel(self.window)
+        viewAll_window.title("Updated Records")
+        viewAll_window.geometry("1000x700")
+
+        header = tk.Label(viewAll_window, text="Updated list of Organizations")
+        header.pack()
+
+        self.textbox = tk.Text(viewAll_window, height=105, width=250)
+        self.textbox.pack(pady=10)
+        # Clear the textbox
+        self.textbox.delete("1.0", tk.END)
+
+        # Insert the result into the textbox
         organization = self.service.getAllRecords()
         for line in organization:
-            print(line)
+            self.textbox.insert(tk.END, str(line) + "\n")
+
+        # Wait for user action
+        viewAll_window.wait_window()
+
+        # Close the insert window
+        viewAll_window.destroy()
 
     # method that takes in user inputs and inserts it into the database.
     def insertRecord(self):
+        insert_window = tk.Toplevel(self.window)
+        insert_window.title("Insert Record")
+        insert_window.geometry("500x500")
+
+        # Add any widgets that you want to display in the insert window
+        # ...
+
+        # Wait for user action
+        insert_window.wait_window()
+
+        # Close the insert window
+        insert_window.destroy()
         print("Insert record")
         organizationID = input("Enter organizationID (15 character alphanumeric): ")
         while len(organizationID) > 15:
