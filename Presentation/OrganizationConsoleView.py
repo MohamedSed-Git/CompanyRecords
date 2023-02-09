@@ -16,60 +16,86 @@ from Model.OrganizationRecord import OrganizationRecordModel
 class OrganizationRecordView:
     # constructor instantiates an instance of our business layer and model layer
     def __init__(self):
+        self.new_window = None
+        self.window = tk.Tk()
         self.service = OrganizationService()
         self.model = OrganizationRecordModel
 
     # method to build GUI using tkinter library
+    # select option from drop down menu, and passed that option to
+    # select_option method once button is clicked
     def appGUI(self):
-        window = tk.Tk()
-        window.title("Company Records")
-        window.geometry("300x250")
+        self.window.title("Company Records")
+        self.window.geometry("1000x700")
+
+        header = tk.Label(self.window, text="Company Record Database")
+        header.pack()
         menu = tk.StringVar()
         menu.set("Select any option")
-        combo = ttk.Combobox(state="readonly", values=["View record", "Insert record",
-                                                       "Update record", "Delete record",
-                                                       "View all records", "Display chart",
-                                                       "Reload records from csv"])
-        combo.place(x=75, y=75)
-        window.mainloop()
+        combo = tk.ttk.Combobox(self.window, state="readonly",
+                                values=["View record", "Insert record",
+                                        "Update record", "Delete record",
+                                        "View all records", "Display chart",
+                                        "Reload records(csv)", "Quit"])
+        combo.pack(pady=10)
+        button = tk.Button(self.window, text="Submit", command=lambda: self.select_option(combo))
+        button.pack(pady=10)
 
-    # method that displays and loops through an interactive menu.
-    def options(self):
-        loop = True
-        while loop:
-            self.menu()
-            option = input()
-            option = int(option)
-            if option == 1:
-                self.reloadDataSet()
-            elif option == 2:
-                self.viewRecord()
-            elif option == 3:
-                self.viewAllRecords()
-            elif option == 4:
-                self.insertRecord()
-            elif option == 5:
-                self.updateRecord()
-            elif option == 6:
-                self.deleteRecord()
-            elif option == 7:
-                self.chartData()
-            elif option == 0:
-                print("Exiting program.")
-                loop = False
-            else:
-                print("Invalid menu option, try again.")
+        self.window.mainloop()
+
+    # method to perform option selected from drop down
+    def select_option(self, combo):
+        selected = combo.get()
+        if selected == "Reload records(csv)":
+            self.reloadDataSet()
+        elif selected == "view record":
+            self.viewRecord()
+        elif selected == "View all records":
+            self.viewAllRecords()
+        elif selected == "Insert record":
+            self.insertRecord()
+        elif selected == "Update record":
+            self.updateRecord()
+        elif selected == "Delete record":
+            self.deleteRecord()
+        elif selected == "Display chart":
+            self.chartData()
+        elif selected == "Quit":
+            exit()
+        else:
+            textbox = tk.Text(self.window, height=50, width=50)
+            textbox.pack(pady=10)
+            # Clear the textbox
+            textbox.delete("1.0", tk.END)
+
+            # Insert the result into the textbox
+            textbox.insert(tk.END, "Invalid menu option, try again.")
 
     # method to display all records from our dataset, reloads the database on every call
     def reloadDataSet(self):
-        print("Organization Dataset")
+        textbox = tk.Text(self.window, height=105, width=250)
+        textbox.pack(pady=10)
+        # Clear the textbox
+        textbox.delete("1.0", tk.END)
+
+        # Insert the result into the textbox
         organization = self.service.getAllDataSetRecords()
         for line in organization:
-            print(line)  # print each line in dataset
+            textbox.insert(tk.END, str(line) + "\n")
 
     # method which takes in an int input and display record at user input
     def viewRecord(self):
-        view = input("Select line number to view a record: ")
+        self.new_window = tk.Toplevel(self.window)
+        self.new_window.title("View Record")
+        self.new_window.geometry("250x250")
+
+        self.label = tk.Label(self.new_window, text="Select line number to view a record: ")
+        self.label.pack()
+
+        self.result_entry = tk.Entry(self.new_window)
+        self.result_entry.pack()
+
+        view = input(self.result_entry)
         # access last element of string and assign it to variable last_num
         last_num = view[-1]
         if last_num == 1 and view != 11:
@@ -81,7 +107,11 @@ class OrganizationRecordView:
         else:
             suffix = "th"
         print("Viewing " + view + suffix + " employee: ")
-        print(self.service.getRecord(view))
+
+        submit_button = tk.Button(self.new_window, text="Submit",
+                                  command=lambda: self.service.getRecord(view))
+        submit_button.pack()
+
 
     # method to display all records from database
     def viewAllRecords(self):
@@ -144,3 +174,6 @@ class OrganizationRecordView:
         x_column = input("Column x: ")
         y_column = input("Column y: ")
         self.service.createBarChart(x_column, y_column)
+
+    def submit_result(prev_window, result_text):
+        prev_window.result_text.set(result_text)
