@@ -1,7 +1,5 @@
 # DataStore.py
 # By Mohamed Sed
-# Student 040922070
-# CST8333_350 Practical Project Part 4
 # Persistence Layer that uses csv library to open and record from the csv dataset.
 # Layer also connects to our Database and performs our CRUD all our operations.
 
@@ -43,7 +41,7 @@ class DataStore:
         myList = []  # Create empty list
         try:
             # String variable which we assigned our csv file name, "r"" is used to indicate raw string
-            path = r"C:\Users\moham\PycharmProjects\PracticalProjectPart04"
+            path = r"C:\Users\moham\PycharmProjects\CompanyRecords"
             fileName = path + r"\organizations.csv"
             file = self.openFile(fileName)
             # Reader function of the csv module takes in our open file and returns a

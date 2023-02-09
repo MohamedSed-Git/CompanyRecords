@@ -1,7 +1,5 @@
 # OrganizationService.py
 # By Mohamed Sed
-# Student 040922070
-# CST8333_350 Practical Project Part 4
 # Business Layer, responsible to process data between persistence and view layers.
 
 # import DataStore class from DataStore python file in Persistence package

@@ -1,7 +1,5 @@
 # OrganizationConsoleView.py
 # By Mohamed Sed
-# Student 040922070
-# CST8333_350 Practical Project Part 4
 # Presentation layer, that handles everything the user sees and interacts with. It sends and retrieves
 # data from business layer.
 
