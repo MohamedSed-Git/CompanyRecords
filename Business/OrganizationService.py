@@ -12,7 +12,7 @@ from Model.OrganizationRecord import OrganizationRecordModel
 class OrganizationService:
     def __init__(self):
         self.dataStore = DataStore()
-        self.model = OrganizationRecordModel('', '', '', int(), '', int())
+        self.model = OrganizationRecordModel('', '', int(), '', int())
 
     # methods reloads recreates the database and populates the table with the dataset records.
     def getAllDataSetRecords(self):
@@ -30,12 +30,12 @@ class OrganizationService:
         return self.dataStore.getRecord(recordID)
 
     # Take in record id, new record and insert new record in database at id
-    def insertRecord(self, organizationID, name, country, founded, industry, numberEmployees):
-        return self.dataStore.insertRecord(organizationID, name, country, founded, industry, numberEmployees)
+    def insertRecord(self, name, country, founded, industry, numberEmployees):
+        return self.dataStore.insertRecord(name, country, founded, industry, numberEmployees)
 
     # Update record in database at provided id
-    def updateRecord(self, recordID, organizationID, name, country, founded, industry, numberEmployees):
-        return self.dataStore.updateRecord(recordID, organizationID, name, country, founded, industry,
+    def updateRecord(self, recordID, name, country, founded, industry, numberEmployees):
+        return self.dataStore.updateRecord(recordID, name, country, founded, industry,
                                            numberEmployees)
 
     # Delete record in database at provided id

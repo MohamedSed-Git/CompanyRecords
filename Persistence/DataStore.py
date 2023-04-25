@@ -56,10 +56,11 @@ class DataStore:
             for line in reader:
 
                 # Instantiate OrganizationRecord object and assign to the record variable
-                OrganizationRecordModel(line[0], line[1], line[2], line[3], line[4], line[5])
+                record = OrganizationRecordModel(line[0], line[1], line[2], line[3], line[4])
 
                 # Append each line to myList and print each line
-                myList.append(line)
+                myList.append((record.get_name(), record.get_country(), record.get_founded(), record.get_industry(),
+                               record.get_numberEmployees()))
 
                 # break once length of list exceeds 100 records
                 if len(myList) >= 100:
@@ -87,22 +88,22 @@ class DataStore:
         return row
 
     # method that takes in record parameters and insert that record at the end of our database table
-    def insertRecord(self, organizationID, name, country, founded, industry, numberEmployees):
+    def insertRecord(self, name, country, founded, industry, numberEmployees):
         cursor = self.db.cursor()
         sql = "INSERT INTO worldwide.company" \
-              "(organizationID, name, country, founded, industry, number_employees ) " \
-              "VALUES (%s, %s, %s, %s, %s, %s) "
-        record = (organizationID, name, country, founded, industry, numberEmployees)
+              "(name, country, founded, industry, number_employees ) " \
+              "VALUES (%s, %s, %s, %s, %s) "
+        record = (name, country, founded, industry, numberEmployees)
         cursor.execute(sql, record)
         self.db.commit()
         return self.getRecord("(SELECT MAX(id) FROM worldwide.company)")
 
     # method that takes in record parameters and updates the corresponding record from our database table
-    def updateRecord(self, recordID, organizationID, name, country, founded, industry, numberEmployees):
+    def updateRecord(self, recordID, name, country, founded, industry, numberEmployees):
         cursor = self.db.cursor()
-        sql = "UPDATE worldwide.company SET organizationID=%s, name=%s, country=%s, " \
+        sql = "UPDATE worldwide.company SET name=%s, country=%s, " \
               "founded=%s, industry=%s, number_employees=%s WHERE id=%s"
-        record = (organizationID, name, country, founded, industry, numberEmployees, recordID)
+        record = (name, country, founded, industry, numberEmployees, recordID)
         cursor.execute(sql, record)
         self.db.commit()
         return self.getRecord(recordID)
@@ -143,12 +144,12 @@ class DataStore:
         mylist = self.loadFromFile()
         try:
             cursor.execute("USE worldwide")
-            cursor.execute("CREATE TABLE company(id INT AUTO_INCREMENT PRIMARY KEY, organizationID VARCHAR(25), "
+            cursor.execute("CREATE TABLE company(id INT AUTO_INCREMENT PRIMARY KEY, "
                            "name VARCHAR(50), country VARCHAR(50), founded INT(4), "
                            "industry VARCHAR(50), number_employees INT(6))")
             cursor.executemany(
-                "INSERT INTO company (organizationID, name, country, founded, industry, number_employees) "
-                "VALUES (%s, %s, %s, %s, %s, %s) ", mylist)
+                "INSERT INTO company (name, country, founded, industry, number_employees) "
+                "VALUES (%s, %s, %s, %s, %s) ", mylist)
         except Error:
             print("Cannot create table, it already exist. ")
         self.db.commit()

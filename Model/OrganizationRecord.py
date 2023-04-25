@@ -9,22 +9,13 @@
 class OrganizationRecordModel:
 
     # the initializing constructor
-    def __init__(self, organizationID, name, country, founded, industry, numberEmployees):
+    def __init__(self, name, country, founded, industry, numberEmployees):
         # Private variables which are initialized
-        self.__organizationID = organizationID
         self.__name = name
         self.__country = country
         self.__founded = int(founded)
         self.__industry = industry
         self.__numberEmployees = int(numberEmployees)
-
-    # Mutator for organization variable
-    def set_organizationID(self, organizationID):
-        self.__organizationID = organizationID
-
-    # Accessor for organization variable
-    def get_organizationID(self):
-        return self.__organizationID
 
     # Mutator for name variable
     def set_name(self, name):
@@ -68,6 +59,6 @@ class OrganizationRecordModel:
 
     # String representation of Organization record
     def __str__(self):
-        return str(self.__organizationID) + "', '" + str(self.__name) + "', '" \
+        return str(self.__name) + "', '" \
                + str(self.__country) + "', '" + str(self.__founded) + "', '" + str(self.__industry) + "', '" \
                + str(self.__numberEmployees)
